@@ -27,7 +27,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(middleware.tokenExtractor);
 
-app.use(express.static(`${__dirname}/../build`));
+app.use(express.static(`${__dirname}/build`));
 
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
@@ -35,7 +35,7 @@ app.use("/api/login", loginRouter);
 
 const path = require("path");
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../build/index.html"));
+  res.sendFile(path.join(__dirname, "/build/index.html"));
 });
 
 if (process.env.NODE_ENV === "test") {
