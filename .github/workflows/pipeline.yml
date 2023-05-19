@@ -11,6 +11,9 @@ on:
 jobs:
   deployment_pipeline:
     runs-on: ubuntu-20.04
+    env:
+      MONGODB_URI: ${{ secret.MONGODB_URI }}
+      TEST_MONGODB_URI: ${{ secret.TEST_MONGODB_URI }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -21,9 +24,9 @@ jobs:
       - name: Test
         run: npm run test
 
-      - name: Deploy
-        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      # - name: Deploy
+      #   if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
+      #   run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
   tag_release:
     needs: [deployment_pipeline]
