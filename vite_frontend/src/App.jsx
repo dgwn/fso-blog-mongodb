@@ -33,6 +33,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Reducers
 import {
@@ -189,7 +190,13 @@ const App = () => {
 
   const welcomeUser = () => (
     <Box align="center">
-      <div>Welcome {user.name}</div>
+      <div
+        style={{
+          marginBottom: "1rem"
+        }}
+      >
+        <h2>Welcome {user.name}</h2>
+      </div>
       <div>
         <Button onClick={handleLogout}>Logout</Button>
       </div>
@@ -198,24 +205,31 @@ const App = () => {
 
   const blogList = () => (
     <div>
-      <div className="p-6 bg-card text-card-foreground rounded-lg shadow-md">
-        <h1 className="text-lg font-bold">Card Title</h1>
-        <p className="text-sm">This is a card using custom theme variables.</p>
-      </div>
+      <h2
+        style={{
+          marginBottom: ".5rem",
+          padding: "1rem",
+          width: "20rem"
+        }}
+      >
+        Blogs:
+      </h2>
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <div
-            key={blog.id}
+          <Card
             style={{
-              border: "1px solid black",
               marginBottom: ".5rem",
               padding: "1rem",
               width: "20rem"
             }}
           >
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </div>
+            <CardContent>
+              <div key={blog.id}>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </div>
+            </CardContent>
+          </Card>
         ))}
     </div>
   );
@@ -246,15 +260,12 @@ const App = () => {
           >
             <Router>
               <Box gridArea="nav">
-                <ModeToggle></ModeToggle>
                 <Nav />
                 {notification !== null && (
                   <Notification notification={notification} />
                 )}
               </Box>
               <Box gridArea="login" align="center">
-                <h2>Blogs</h2>
-
                 {user === null && (
                   <>
                     <Login

@@ -1,15 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList
+} from "@/components/ui/navigation-menu";
 
-const linkStyle = {
-  textDecoration: "none",
-  color: "black",
-  ":hover": {
-    color: "red"
-  },
-  alignContent: "center",
-  height: "100%"
-};
+import ModeToggle from "@/components/mode-toggle";
 
 const Nav = () => {
   return (
@@ -19,17 +16,36 @@ const Nav = () => {
         height: "auto",
         display: "flex",
         justifyContent: "space-evenly",
-        backgroundColor: "#e6f2fd",
-        marginTop: "0"
+        marginTop: "0",
+        padding: "10px"
       }}
     >
-      <Link to="/" style={linkStyle}>
-        <h3>Blogs</h3>
-      </Link>
-      &nbsp;
-      <Link to="/users" style={linkStyle}>
-        <h3>Users</h3>
-      </Link>
+      <NavigationMenu>
+        <NavigationMenuList>
+          {/* Blogs Navigation Item */}
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <a href="/">
+                <h2>Blogs</h2>
+              </a>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+
+          {/* Users Navigation Item */}
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <a href="/users">
+                <h2>Users</h2>
+              </a>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+
+          {/* Mode Toggle */}
+          <NavigationMenuItem>
+            <ModeToggle />
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
     </div>
   );
 };

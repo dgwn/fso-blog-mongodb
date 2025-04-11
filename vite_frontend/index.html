@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bloglist Frontend</title>
     <link href="/src/index.css" rel="stylesheet" />
+    <script>
+      // Detect theme from localStorage or system preference
+      const theme = localStorage.getItem("vite-ui-theme") || "system";
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      const appliedTheme = theme === "system" ? systemTheme : theme;
+      document.documentElement.classList.add(appliedTheme);
+    </script>
   </head>
   <body>
     <div id="root"></div>
