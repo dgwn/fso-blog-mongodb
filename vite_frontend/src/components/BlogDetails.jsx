@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  setNotification,
-  resetNotification
-} from "../reducers/notificationReducer";
-import { voteBlog, removeBlog, commentBlog } from "../reducers/blogReducer";
-import TextField from "@mui/material/TextField";
 
-import { Box, Card, CardHeader, CardBody, CardFooter } from "grommet";
+import { voteBlog, removeBlog, commentBlog } from "../reducers/blogReducer";
+import { Input } from "@/components/ui/input";
+
+import { Box } from "grommet";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Heart, Trash } from "lucide-react";
+import { Toast } from "grommet-icons";
 
 const BlogDetails = (blogs) => {
   const id = useParams().id;
@@ -28,28 +38,20 @@ const BlogDetails = (blogs) => {
       // yet if patch is done first, notifcation timeout will take longer than 5 seconds
       // this most likely would not be an issue if using a faster, production connection to mongodb?
 
-      dispatch(resetNotification());
       dispatch(voteBlog(blog.id, blog.likes));
-      dispatch(
-        setNotification(
-          `"${blog.title}" has been updated to ${blog.likes + 1} likes`
-        )
-      );
+      toast(`"${blog.title}" has been updated to ${blog.likes + 1} likes`);
     } catch (exception) {
-      dispatch(setNotification("Error updating blog"));
+      toast("Error updating blog");
     }
   };
 
   const postComment = async (event) => {
     try {
-      event.preventDefault();
-      dispatch(resetNotification());
-      dispatch(setNotification("comment has been added"));
-      dispatch(commentBlog(blog.id, blog.comments, newComment));
-
+      toast("comment has been added");
       setNewComment("");
+      dispatch(commentBlog(blog.id, blog.comments, newComment));
     } catch (exception) {
-      dispatch(setNotification("Error adding comment"));
+      toast("Error adding comment");
     }
   };
 
@@ -58,26 +60,22 @@ const BlogDetails = (blogs) => {
       // await blogService.remove(blog.id);
       await dispatch(removeBlog(blog.id));
       history.push("/");
-      dispatch(setNotification(`The blog has been deleted`));
+      toast(`The blog has been deleted`);
     } catch (exception) {
-      dispatch(
-        setNotification(
-          "Error deleting blog. You must be logged in as the blog's creator"
-        )
-      );
+      toast("Error deleting blog. You must be logged in as the blog's creator");
     }
   };
 
   return (
     <div className="blog">
       {blog && (
-        <Card height="auto" width="medium" background="light-3" margin="10px">
-          <CardHeader pad="medium">
+        <Card>
+          <CardHeader>
             <h2>
               &quot;{blog.title}&quot; - {blog.author}
             </h2>
           </CardHeader>
-          <CardBody pad="medium" gap="none" background="light-1">
+          <CardContent>
             <p>{blog.url}</p>
             <p>added by {blog.user.name}</p>
             <h3>Comments:</h3>
@@ -87,12 +85,12 @@ const BlogDetails = (blogs) => {
               ))}
             </ul>
             <form onSubmit={postComment} id="blogForm">
-              <Box direction="row" justify="around">
+              <div>
                 <div>
-                  <TextField
+                  <Input
                     value={newComment}
                     onChange={({ target }) => setNewComment(target.value)}
-                    label="Comment"
+                    placeholder="Comment"
                     id="commentInput"
                   />
                 </div>
@@ -102,10 +100,10 @@ const BlogDetails = (blogs) => {
 
                 <br />
                 <br />
-              </Box>
+              </div>
             </form>
-          </CardBody>
-          <CardFooter pad={{ horizontal: "medium" }} background="light-2">
+          </CardContent>
+          <CardFooter className="blogFooter">
             <Button onClick={() => updateLikes(blog)}>
               <Heart />
             </Button>

@@ -13,7 +13,7 @@ const Nav = () => {
     <div
       style={{
         width: "100%",
-        height: "auto",
+        height: "3rem",
         display: "flex",
         justifyContent: "space-evenly",
         marginTop: "0",

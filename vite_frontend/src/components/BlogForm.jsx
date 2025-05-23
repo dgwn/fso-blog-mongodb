@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 
-import TextField from "@mui/material/TextField";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const BlogForm = ({ createBlog }) => {
   const [newTitle, setNewTitle] = useState("");
@@ -23,39 +23,40 @@ const BlogForm = ({ createBlog }) => {
   return (
     <form onSubmit={addBlog} id="blogForm">
       <div>
-        <TextField
+        <Input
           value={newTitle}
           onChange={({ target }) => setNewTitle(target.value)}
-          label="Title"
+          placeholder="Title"
           id="titleInput"
         />
       </div>
 
       <div>
-        <TextField
+        <Input
           value={newAuthor}
           onChange={({ target }) => setNewAuthor(target.value)}
-          label="Author"
+          placeholder="Author"
           id="authorInput"
         />
       </div>
 
       <div>
-        <TextField
+        <Input
           value={newUrl}
           type="url"
           onChange={({ target }) => setNewUrl(target.value)}
-          label="URL"
+          placeholder="URL"
           id="urlInput"
         />
       </div>
 
-      <Button type="submit" margin={{ top: "small" }}>
+      <Button
+        type="submit"
+        margin={{ top: "small" }}
+        style={{ marginLeft: "6rem" }}
+      >
         Submit
       </Button>
-
-      <br />
-      <br />
     </form>
   );
 };

@@ -18,10 +18,6 @@ import Nav from "./components/Nav";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
-// Grommet
-import { Grommet, Box, Grid, ResponsiveContext } from "grommet";
-import { deepMerge } from "grommet/utils";
-
 //shad
 import ModeToggle from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -34,12 +30,10 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 // Reducers
-import {
-  setNotification,
-  resetNotification
-} from "./reducers/notificationReducer";
 import { createBlog, initBlogs, voteBlog } from "./reducers/blogReducer";
 import { setUser, resetUser } from "./reducers/loginReducer";
 
@@ -57,11 +51,16 @@ const ResponsiveGrid = ({ children, areas, ...props }) => {
 };
 
 const App = () => {
+  // Existing login state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+
+  // New signup state
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupName, setSignupName] = useState("");
+
   const [newUserVisible, setNewUserVisible] = useState(false);
-  // const [visible, setVisible] = useState(false);
 
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.notification);
@@ -86,22 +85,6 @@ const App = () => {
     }
   }, [dispatch]);
 
-  const theme = deepMerge({
-    global: {
-      font: {
-        family: "Roboto",
-        size: "18px",
-        height: "20px"
-      },
-      breakpoints: {
-        small: {
-          value: 900
-        },
-        desktop: { value: 1500 }
-      }
-    }
-  });
-
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -114,32 +97,33 @@ const App = () => {
 
       blogService.setToken(user.token);
       dispatch(setUser(user));
-      dispatch(setNotification("Logged in"));
+      toast("Logged in");
 
       setUsername("");
       setPassword("");
     } catch (exception) {
-      dispatch(setNotification("Wrong credentials"));
+      toast("Wrong credentials");
     }
   };
 
-  const handleCreateUser = async () => {
+  const handleCreateUser = async (event) => {
+    event.preventDefault();
     try {
-      console.log(name);
-
       await loginService.newUser({
-        username,
-        name,
-        password
+        username: signupUsername,
+        name: signupName,
+        password: signupPassword
       });
 
-      dispatch(setNotification("New user created"));
+      toast("New user created");
 
-      setUsername("");
-      setPassword("");
-      setName("");
+      // Clear signup form
+      setSignupUsername("");
+      setSignupPassword("");
+      setSignupName("");
+      setNewUserVisible(false);
     } catch (exception) {
-      dispatch(setNotification("Error"));
+      toast("Error");
     }
   };
 
@@ -152,7 +136,7 @@ const App = () => {
     event.preventDefault();
     window.localStorage.removeItem("loggedBlogAppUser");
     dispatch(resetUser());
-    dispatch(setNotification("Logged out"));
+    toast("Logged out");
 
     setUsername("");
     setPassword("");
@@ -164,9 +148,9 @@ const App = () => {
 
       dispatch(createBlog(blogObject));
 
-      dispatch(setNotification(`"${blogObject.title}" has been added`));
+      toast(`"${blogObject.title}" has been added`);
     } catch (exception) {
-      dispatch(setNotification("Error posting blog"));
+      toast("Error posting blog");
     }
   };
 
@@ -176,20 +160,15 @@ const App = () => {
       // yet if patch is done first, notifcation timeout will take longer than 5 seconds
       // this most likely would not be an issue if using a faster, production connection to mongodb?
 
-      dispatch(resetNotification());
       dispatch(voteBlog(blog.id, blog.likes));
-      dispatch(
-        setNotification(
-          `"${blog.title}" has been updated to ${blog.likes + 1} likes`
-        )
-      );
+      toast(`"${blog.title}" has been updated to ${blog.likes + 1} likes`);
     } catch (exception) {
-      dispatch(setNotification("Error updating blog"));
+      toast("Error updating blog");
     }
   };
 
   const welcomeUser = () => (
-    <Box align="center">
+    <div align="center" style={{ maxWidth: "20rem", margin: "auto" }}>
       <div
         style={{
           marginBottom: "1rem"
@@ -200,7 +179,7 @@ const App = () => {
       <div>
         <Button onClick={handleLogout}>Logout</Button>
       </div>
-    </Box>
+    </div>
   );
 
   const blogList = () => (
@@ -237,90 +216,75 @@ const App = () => {
   const blogFormRef = useRef();
 
   return (
-    <Grommet theme={theme}>
-      <ResponsiveContext.Consumer>
-        {(size) => (
-          <ResponsiveGrid
-            responsive={true}
-            rows={["xsmall", "auto", "auto"]}
-            columns={["auto", "auto"]}
-            gap="small"
-            areas={{
-              small: [
-                { name: "nav", start: [0, 0], end: [1, 0] },
-                { name: "login", start: [0, 1], end: [1, 1] },
-                { name: "blogs", start: [0, 2], end: [1, 2] }
-              ],
-              desktop: [
-                { name: "nav", start: [0, 0], end: [1, 0] },
-                { name: "login", start: [0, 1], end: [0, 1] },
-                { name: "blogs", start: [1, 1], end: [1, 1] }
-              ]
-            }}
-          >
-            <Router>
-              <Box gridArea="nav">
-                <Nav />
-                {notification !== null && (
-                  <Notification notification={notification} />
-                )}
-              </Box>
-              <Box gridArea="login" align="center">
-                {user === null && (
-                  <>
-                    <Login
-                      handleLogin={handleLogin}
-                      username={username}
-                      setUsername={setUsername}
-                      password={password}
-                      setPassword={setPassword}
-                    />
-                    {newUserVisible === true && (
-                      <NewUser
-                        newUserVisible={newUserVisible}
-                        setNewUserVisible={setNewUserVisible}
-                        handleCreateUser={handleCreateUser}
-                        username={username}
-                        setUsername={setUsername}
-                        password={password}
-                        setPassword={setPassword}
-                        setName={setName}
-                        name={name}
-                      />
-                    )}
-                    <Button onClick={userHandler}>Sign Me Up!</Button>
-                  </>
-                )}
-                {user !== null && welcomeUser()}
-                {user !== null && (
-                  <Togglable buttonLabel="Post Blog" ref={blogFormRef}>
-                    <BlogForm createBlog={addBlog} />
-                  </Togglable>
-                )}
-              </Box>
-              <Box gridArea="blogs" align="center" alignContent="center">
-                {/* <Router> */}
-                <Switch>
-                  <Route path="/users/:id">
-                    <User users={users} />
-                  </Route>
-                  <Route path="/users">
-                    <Users users={users} />
-                  </Route>
-                  <Route path="/blogs/:id">
-                    <BlogDetails blogs={blogs} updateLikes={updateLikes} />
-                  </Route>
-                  <Route path="/">{blogList()}</Route>
-                </Switch>
-                {/* </Router> */}
+    <Router>
+      <div>
+        <Nav />
+      </div>
+      {notification !== null && <Notification notification={notification} />}
+      <Toaster />
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div
+          style={{
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          {user === null && (
+            <>
+              <Login
+                handleLogin={handleLogin}
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+              />
+              {newUserVisible === true && (
+                <NewUser
+                  newUserVisible={newUserVisible}
+                  setNewUserVisible={setNewUserVisible}
+                  handleCreateUser={handleCreateUser}
+                  signupUsername={signupUsername}
+                  setSignupUsername={setSignupUsername}
+                  signupPassword={signupPassword}
+                  setSignupPassword={setSignupPassword}
+                  signupName={signupName}
+                  setSignupName={setSignupName}
+                />
+              )}
+              <Button onClick={userHandler}>Sign Me Up!</Button>
+            </>
+          )}
+          {user !== null && welcomeUser()}
+          {user !== null && (
+            <div style={{ marginTop: "1rem" }}>
+              <Togglable buttonLabel="Post Blog" ref={blogFormRef}>
+                <BlogForm createBlog={addBlog} />
+              </Togglable>
+            </div>
+          )}
+        </div>
+        <div align="center">
+          {/* <Router> */}
+          <Switch>
+            <Route path="/users/:id">
+              <User users={users} />
+            </Route>
+            <Route path="/users">
+              <Users users={users} />
+            </Route>
+            <Route path="/blogs/:id">
+              <BlogDetails blogs={blogs} updateLikes={updateLikes} />
+            </Route>
+            <Route path="/">{blogList()}</Route>
+          </Switch>
+          {/* </Router> */}
 
-                {/* {user !== null && <BlogTable blogs={blogs} />} */}
-              </Box>
-            </Router>
-          </ResponsiveGrid>
-        )}
-      </ResponsiveContext.Consumer>
-    </Grommet>
+          {/* {user !== null && <BlogTable blogs={blogs} />} */}
+        </div>
+      </div>
+    </Router>
   );
 };
 

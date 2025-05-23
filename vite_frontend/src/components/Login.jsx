@@ -1,7 +1,9 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { Box } from "grommet";
-import TextField from "@mui/material/TextField";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { max } from "lodash";
 
 const loginForm = ({
   handleLogin,
@@ -11,22 +13,22 @@ const loginForm = ({
   setPassword
 }) => {
   return (
-    <Box align="center">
+    <div align="center" style={{ maxWidth: "20rem", marginTop: "2rem" }}>
       <form onSubmit={handleLogin}>
         <div>
-          <TextField
+          <Input
             value={username}
             onChange={({ target }) => setUsername(target.value)}
-            label="Username"
+            placeholder="Username"
             id="username"
           />
         </div>
 
         <div>
-          <TextField
+          <Input
             value={password}
             onChange={({ target }) => setPassword(target.value)}
-            label="Password"
+            placeholder="Password"
             type="password"
             id="password"
           />
@@ -38,7 +40,7 @@ const loginForm = ({
         <br />
         <br />
       </form>
-    </Box>
+    </div>
   );
 };
 

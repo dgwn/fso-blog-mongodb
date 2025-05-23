@@ -8,7 +8,11 @@ const notificationAlert = ({ notification }) => {
         zIndex: 5,
         position: "absolute",
         top: "20vh",
-        margin: "auto"
+        margin: "auto",
+        left: 0,
+        right: 0,
+        marginInline: "auto",
+        width: "fit-content"
       }}
     >
       <Alert
