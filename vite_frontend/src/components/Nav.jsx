@@ -20,7 +20,7 @@ const Nav = () => {
         padding: "10px"
       }}
     >
-      <NavigationMenu>
+      <NavigationMenu className="w-full max-w-screen">
         <NavigationMenuList>
           {/* Blogs Navigation Item */}
           <NavigationMenuItem>
