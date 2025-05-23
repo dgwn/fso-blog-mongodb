@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind typography;
+
+h2 {
+  font-size: 1.5rem;
+}
+
+p,
+button,
+a,
+li {
+  font-size: 0.75rem;
+}
+
+* {
+  margin: 10px;
+}
+
+.blogFooter {
+  justify-content: space-evenly;
+}
