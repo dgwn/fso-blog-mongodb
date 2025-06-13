@@ -22,11 +22,11 @@ const Users = (users) => {
 
   return (
     <div>
-      <Table aria-label="simple table" className="w-[400px]">
+      <Table aria-label="simple table" className="w-full">
         <TableHeader>
           <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead className="w-[200px]">Number of Blogs</TableHead>
+            <TableHead className="text-center">User</TableHead>
+            <TableHead className="text-center">Number of Blogs</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
