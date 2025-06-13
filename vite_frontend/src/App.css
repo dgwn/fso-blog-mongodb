@@ -16,7 +16,15 @@ li {
 }
 
 * {
-  margin: 10px;
+  box-sizing: border-box;
+}
+
+h2,
+p,
+button,
+a,
+li {
+  margin: 10px 0;
 }
 
 .blogFooter {

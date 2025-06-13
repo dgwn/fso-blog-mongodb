@@ -183,26 +183,12 @@ const App = () => {
   );
 
   const blogList = () => (
-    <div>
-      <h2
-        style={{
-          marginBottom: ".5rem",
-          padding: "1rem",
-          width: "20rem"
-        }}
-      >
-        Blogs:
-      </h2>
+    <div className="w-full max-w-full">
+      <h2 className="mb-2 p-4">Blogs:</h2>
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Card
-            style={{
-              marginBottom: ".5rem",
-              padding: "1rem",
-              width: "20rem"
-            }}
-          >
+          <Card className="mb-2 p-4 w-full">
             <CardContent>
               <div key={blog.id}>
                 <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
@@ -265,7 +251,7 @@ const App = () => {
             </div>
           )}
         </div>
-        <div align="center">
+        <div className="w-full max-w-screen-lg mx-auto px-4 text-center">
           {/* <Router> */}
           <Switch>
             <Route path="/users/:id">
